@@ -1,9 +1,3 @@
-import discord
-import requests
-import datetime
-import random
-import string
-import time
 import uuid
 from __init__ import (
     __title__,
