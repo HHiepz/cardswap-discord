@@ -50,8 +50,9 @@ python main.py
 ## Hình ảnh
 
 ![](https://i.ibb.co/HLLHtGr1/awcwac.png)
-Quy trình nạp thẻ
 
-![](https://i.ibb.co/mCFfP6BC/ascasc.png)
-Kiểm tra phí nạp thẻ
+![](https://i.ibb.co/KxDhf64y/image.png)
+
+![](https://i.ibb.co/hFPVx7hs/image.png)
+
 
