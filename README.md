@@ -1,4 +1,4 @@
-## Discord Bot Nạp Thẻ Cào [![GitHub Release](https://img.shields.io/github/v/release/HHiepz/cardswap-discord?style=flat)](https://github.com/minevn/dotman/releases) [![Discord](https://img.shields.io/discord/1068941579244539904.svg?label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2)](https://2k9xteam.shop/discord) 
+## Discord Bot Nạp Thẻ Cào [![GitHub Release](https://img.shields.io/github/v/release/HHiepz/cardswap-discord?style=flat)](https://github.com/HHiepz/cardswap-discord/releases) [![Discord](https://img.shields.io/discord/1068941579244539904.svg?label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2)](https://2k9xteam.shop/discord) 
 
 
 Bot Discord này giúp tự động hóa việc nạp thẻ cào, tích hợp trực tiếp giữa server Discord của bạn và website đổi thẻ.
