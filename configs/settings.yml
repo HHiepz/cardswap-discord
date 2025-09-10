@@ -2,7 +2,6 @@
 # Project: CardSwap
 # Author: HHiepz | http://hhiepz.github.io/
 # Date Created: 05/09/2025
-# Last Updated: 05/09/2025
 # ======================================================================================
 prefix: "!"
 provider: "https://card2k.com"
@@ -44,11 +43,11 @@ card_status_check:
 #
 banner:
   default: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTmdMaWzjGnnRXb6cvKjMasSO5AiRNHBh1Ybg&s"
-  kiem_tra_phi: ""
+  kiem_tra_phi: "https://i.ibb.co/DHNx3NjC/image.png"
   doi_the_cao: ""
 
 url: 
-  app: "https://2k9xteam.shop"
+  app: "https://card2k.com"
 
 #
 # =====================================================================
