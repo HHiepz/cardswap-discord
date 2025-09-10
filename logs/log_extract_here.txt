@@ -1,0 +1,1 @@
+Log sẽ được in ra ở thư mục này (không phải trong file này)
