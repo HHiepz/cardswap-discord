@@ -14,7 +14,7 @@ Bot Discord này giúp tự động hóa việc nạp thẻ cào, tích hợp tr
 **1. Chuẩn bị**:
 
 - Cài đặt [Python](https://www.python.org/downloads/) (phiên bản 3.13 trở lên)
-- Tải source bot [tại đây](https://github.com/HHiepz/cardswap/releases), giải nén và truy cập đến thư mục.
+- Tải source bot [tại đây](https://github.com/HHiepz/cardswap-discord/releases), giải nén và truy cập đến thư mục.
 
 **2. Cài đặt các thư viện cần thiết**:
 
