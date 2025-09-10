@@ -1,6 +1,4 @@
-import discord
 import requests
-import datetime
 from database.session import SessionLocal
 from database.models import Card2k
 from __init__ import (
@@ -20,38 +18,26 @@ import hashlib
 
 # Lấy dữ liệu từ API
 def get_fee_api():
-    # Lấy dữ liệu từ file settings
     config = get_data_file_yml()
-
-    # Lấy dữ liệu từ database
     session = SessionLocal()
     data = session.query(Card2k.partner_id).first()
     if not data or not data.partner_id or not config["provider"]:
         add_log(
-            "Người dùng cố gắng kiểm tra phí đổi thẻ cào nhưng database partner_id rỗng hoặc nhà cung cấp (provider) trong file settings.yml bị rỗng.",
-            "WARNING",
+            "[FUNC: GET_FEE_API] Thiếu dữ liệu database partner_id hoặc nhà cung cấp (provider) trong file settings.yml.",
+            "ERROR",
         )
         return None
-
     partner_id = data.partner_id
-    provider = config["provider"]
-
-    add_log(
-        f"Lấy dữ liệu từ API: {partner_id} - {provider}",
-        "INFO",
-    )
-
-    # Lấy dữ liệu từ API
     url = f"{config['provider']}/chargingws/v2/getfee?partner_id={partner_id}"
     try:
         response = requests.get(url, timeout=10)
         response.raise_for_status()
         return response.json()
     except requests.RequestException as e:
-        add_log(f"Lỗi khi truy cập API: {e}", "ERROR")
+        add_log(f"[FUNC: GET_FEE_API] Lỗi khi truy cập API: {e}", "ERROR")
         return None
     except Exception as e:
-        add_log(f"Lỗi khi truy cập API: {e}", "ERROR")
+        add_log(f"[FUNC: GET_FEE_API] Lỗi khi truy cập API: {e}", "ERROR")
         return None
 
 
@@ -129,17 +115,12 @@ def get_fee_telco_api(telco: str):
 
 # Gửi thẻ
 def exchange_card(telco: str, amount: int, code: str, serial: str):
-    # Tải tài nguyên
     config = get_data_file_yml()
     session = SessionLocal()
-
-    # Lấy tài nguyên
     data = session.query(Card2k).first()
     partner_id = data.partner_id
     partner_key = data.partner_key
     api_url = config["provider"] or "https://card2k.com"
-
-    # Tạo request_id và sign
     request_id = random_string()
     sign = hashlib.md5(f"{partner_key}{code}{serial}".encode()).hexdigest()
 
@@ -152,7 +133,7 @@ def exchange_card(telco: str, amount: int, code: str, serial: str):
             "request_id": request_id,
             "partner_id": partner_id,
             "sign": sign,
-            "command": "charging"
+            "command": "charging",
         }
 
         url = f"{api_url}/chargingws/v2"
@@ -160,10 +141,10 @@ def exchange_card(telco: str, amount: int, code: str, serial: str):
         response.raise_for_status()
         return response.json()
     except requests.RequestException as e:
-        add_log(f"Lỗi khi truy cập API: {e}", "ERROR")
+        add_log(f"[FUNC: EXCHANGE_CARD] Lỗi khi truy cập API: {e}", "ERROR")
         return None
     except Exception as e:
-        add_log(f"Lỗi khi gửi thẻ: {e}", "ERROR")
+        add_log(f"[FUNC: EXCHANGE_CARD] Lỗi khi gửi thẻ: {e}", "ERROR")
         return None
     finally:
         session.close()
@@ -171,17 +152,12 @@ def exchange_card(telco: str, amount: int, code: str, serial: str):
 
 # Kiểm tra trạng thái thẻ
 def check_card_status(telco: str, amount: int, code: str, serial: str, request_id: str):
-    # Tải tài nguyên
     config = get_data_file_yml()
     session = SessionLocal()
-
-    # Lấy tài nguyên
     data = session.query(Card2k).first()
     partner_id = data.partner_id
     partner_key = data.partner_key
     api_url = config["provider"] or "https://card2k.com"
-
-    # Tạo sign
     sign = hashlib.md5(f"{partner_key}{code}{serial}".encode()).hexdigest()
 
     try:
@@ -193,7 +169,7 @@ def check_card_status(telco: str, amount: int, code: str, serial: str, request_i
             "request_id": request_id,
             "partner_id": partner_id,
             "sign": sign,
-            "command": "check"
+            "command": "check",
         }
 
         url = f"{api_url}/chargingws/v2"
@@ -201,10 +177,10 @@ def check_card_status(telco: str, amount: int, code: str, serial: str, request_i
         response.raise_for_status()
         return response.json()
     except requests.RequestException as e:
-        add_log(f"Lỗi khi truy cập API: {e}", "ERROR")
+        add_log(f"[FUNC: CHECK_CARD_STATUS] Lỗi khi truy cập API: {e}", "ERROR")
         return None
     except Exception as e:
-        add_log(f"Lỗi khi gửi thẻ: {e}", "ERROR")
+        add_log(f"[FUNC: CHECK_CARD_STATUS] Lỗi khi gửi thẻ: {e}", "ERROR")
         return None
     finally:
         session.close()
