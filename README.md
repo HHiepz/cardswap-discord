@@ -39,12 +39,12 @@ python main.py
 
 ## Danh sách lệnh cơ bản
 
-| Lệnh                                             | Chức năng                             | Permission    |
-|--------------------------------------------------|---------------------------------------|---------------|
-| /set-up                                          | Kết nối API với website               | admin         |
-| /show-setup                                      | Hiển thị setup đã cài đặt             | admin         |
-| /kiem-tra-phi <nhà mạng>                         | Kiểm tra phí từng loại thẻ            | member        |
-| /nap-the <nhà mạng> <mệnh giá> <code> <serial>   | Nạp thẻ                               | member        |
+| Lệnh                                                   | Chức năng                             | Permission    |
+|--------------------------------------------------------|---------------------------------------|---------------|
+| /set-up                                                | Kết nối API với website               | admin         |
+| /show-setup                                            | Hiển thị setup đã cài đặt             | admin         |
+| /kiem-tra-phi <nhà mạng>                               | Kiểm tra phí từng loại thẻ            | member        |
+| /nap-the <nhà mạng> <mệnh giá> <mã thẻ> <serial thẻ>   | Nạp thẻ                               | member        |
 
 
 ## Hình ảnh
