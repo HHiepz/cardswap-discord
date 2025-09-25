@@ -1,0 +1,6 @@
+__title__ = "cardswap discord"
+__author__ = "HHiepz | http://hhiepz.github.io/"
+__version__ = "1.0.0-beta.2"
+__date_created__ = "05/09/2025"
+__last_updated__ = "11/09/2025"
+__support_channel__ = "https://2k9xteam.shop/discord"

@@ -1,0 +1,144 @@
+# ======================================================================================
+# Project: cardswap discord
+# Author: HHiepz | http://hhiepz.github.io/
+# ======================================================================================
+prefix: "!"
+provider: "https://card2k.com"
+
+#
+# =====================================================================
+# CẤU HÌNH KIỂM TRA TRẠNG THÁI THẺ NẠP
+#
+# type:
+#   - "api": Kiểm tra trạng thái thẻ qua API của nhà cung cấp.
+#            Ưu điểm: Không cần cấu hình thêm, dễ sử dụng.
+#            Nhược điểm: Có thể chậm (thường kiểm tra mỗi 1 phút), kết quả trả về không tức thời.
+#   - "callback": Sử dụng callback để nhận trạng thái thẻ khi có thay đổi từ nhà cung cấp.
+#            Ưu điểm: Nhận kết quả nhanh, chủ động khi trạng thái thẻ thay đổi.
+#            Nhược điểm: Cần cấu hình URL callback (thường là địa chỉ VPS hoặc server của bạn).
+#
+# callback_url:
+#   - Nếu sử dụng type là "callback", hãy nhập URL endpoint của bạn để nhận thông báo trạng thái thẻ.
+#   - Nếu không sử dụng callback, để trống trường này.
+#
+# delay_time: Thời gian delay giữa các lần kiểm tra trạng thái thẻ. (min: 30)
+# =====================================================================
+#
+card_status_check:
+  type: "api" 
+  callback_url: ""
+  delay_time: 30 
+
+#
+# =====================================================================
+# CẤU HÌNH BOT - BANNER VÀ URL
+#
+# Sử dụng các link ảnh dưới đây cho các lệnh bot.
+# - default: Ảnh mặc định cho các lệnh bot.
+# - kiem_tra_phi: Ảnh sử dụng cho lệnh kiểm tra phí (nếu có).
+# - doi_the_cao: Ảnh sử dụng cho lệnh đổi thẻ cào (nếu có).
+# - app: URL đến discord hoặc website của bạn.
+# =====================================================================
+#
+banner:
+  default: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTmdMaWzjGnnRXb6cvKjMasSO5AiRNHBh1Ybg&s"
+  kiem_tra_phi: "https://i.ibb.co/DHNx3NjC/image.png"
+  doi_the_cao: ""
+
+url: 
+  app: "https://card2k.com"
+
+#
+# =====================================================================
+# Danh sách các loại thẻ được hỗ trợ [true: bật, false: tắt]
+# Lưu ý: Sau khi thay đổi, cần khởi động lại bot để áp dụng.
+# =====================================================================
+#
+card_types:
+  viettel: true
+  mobifone: false
+  vinaphone: true
+  vietnammobile: false
+  garena: true
+  zing: true
+  vcoin: true
+  gate: false
+
+#
+# =====================================================================
+# Cấu hình mệnh giá thẻ được phép sử dụng [true: bật, false: tắt]
+# Lưu ý: Sau khi thay đổi, cần khởi động lại bot để áp dụng.
+# =====================================================================
+#
+card_amounts:
+  viettel:
+    10000: true
+    20000: true
+    30000: true
+    50000: true
+    100000: true
+    200000: true
+    300000: true
+    500000: true
+    1000000: true
+  mobifone:
+    10000: true
+    20000: true
+    30000: true
+    50000: true
+    100000: true
+    200000: true
+    300000: true
+    500000: true
+    1000000: false
+  vinaphone:
+    10000: true
+    20000: true
+    30000: true
+    50000: true
+    100000: true
+    200000: true
+    300000: true
+    500000: true
+    1000000: false
+  vietnammobile:
+    10000: true
+    20000: true
+    30000: true
+    50000: true
+    100000: true
+    200000: true
+    300000: true
+    500000: true
+    1000000: false
+  garena:
+    5000: true
+    10000: true
+    20000: true
+    30000: false
+    50000: true
+    100000: true
+    200000: true
+    300000: false
+    500000: true
+    1000000: false
+  zing:
+    10000: true
+    20000: true
+    30000: false
+    50000: true
+    100000: true
+    200000: true
+    300000: false
+    500000: true
+    1000000: true
+  vcoin:
+    10000: true
+    20000: true
+    30000: false
+    50000: true
+    100000: true
+    200000: true
+    300000: true
+    500000: true
+    1000000: true
