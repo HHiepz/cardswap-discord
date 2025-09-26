@@ -94,7 +94,7 @@ class FeeService:
                     break
 
             result["fee_min"] = min_fee
-            result["amount_min"] = min_amount  # Fixed key name
+            result["amount_min"] = min_amount  
             result["list_fee"] = fee_dict
 
         return result
