@@ -5,7 +5,7 @@ from discord import app_commands
 from discord.ext import commands
 
 from services.card2k.fee_service import FeeService
-from utils.embed import error_embed, create_embed, EmbedColor
+from utils.embed import error_embed, disabled_command_embed
 from utils.config import get_config_value, get_config
 from helpers.console import logger
 
@@ -14,8 +14,13 @@ class CheckFeeExchangeCard(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
         self.fee_service = FeeService()
+        self.enabled = get_config_value("commands.kiem_tra_phi.enabled", False)
+        self.only_admin = get_config_value("commands.kiem_tra_phi.only_admin", False)
 
-    @app_commands.command(name="kiem_tra_phi", description="Kiểm tra phí đổi thẻ cào")
+    @app_commands.command(
+        name="kiem_tra_phi", 
+        description=get_config_value("commands.kiem_tra_phi.description", "Kiểm tra phí đổi thẻ cào")
+    )
     @app_commands.choices(
         telco=[
             app_commands.Choice(name="Tất cả nhà mạng", value="all"),
@@ -30,6 +35,18 @@ class CheckFeeExchangeCard(commands.Cog):
         """
         Kiểm tra phí đổi thẻ cào
         """
+
+        # Kiểm tra chức năng đã bị tắt
+        if not self.enabled:
+            embed = disabled_command_embed("Chức năng đã bị tắt")
+            await interaction.response.send_message(embed=embed)
+            return
+
+        # Kiểm tra quyền admin nếu cần
+        if self.only_admin and not interaction.user.guild_permissions.administrator:
+            embed = disabled_command_embed("Lệnh này chỉ dành cho quản trị viên")
+            await interaction.response.send_message(embed=embed)
+            return
 
         try:
             if telco == "all":

@@ -7,6 +7,24 @@ provider: "https://card2k.com"
 
 #
 # =====================================================================
+# CẤU HÌNH CHỨC NĂNG
+# 
+# enabled: true - bật chức năng
+#          false - tắt chức năng
+# description: "Mô tả chức năng"
+# only_admin: true - có vai trò thuộc adminstrator mới sử dụng được
+#                 false - tất cả người dùng đều sử dụng được
+# =====================================================================
+#
+commands:
+  kiem_tra_phi:
+    enabled: true
+    description: "Kiểm tra phí đổi thẻ cào"
+    only_admin: true
+  
+
+#
+# =====================================================================
 # CẤU HÌNH KIỂM TRA TRẠNG THÁI THẺ NẠP
 #
 # type:

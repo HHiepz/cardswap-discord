@@ -78,3 +78,16 @@ def success_embed(description: str) -> discord.Embed:
     )
     embed = _add_footer(content)
     return embed
+
+
+def disabled_command_embed(description: str = "Từ chối quyền sử dụng") -> discord.Embed:
+    """
+    Tạo embed thông báo chức năng đã bị tắt
+    """
+
+    content = discord.Embed(
+        title=description if description else "Chức năng đã bị tắt",
+        color=EmbedColor.ERROR.value,
+    )
+    embed = _add_footer(content)
+    return embed
