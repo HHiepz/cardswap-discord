@@ -1,139 +1,154 @@
 import discord
+import datetime
+
 from discord import app_commands
 from discord.ext import commands
-from database.session import SessionLocal
-from database.models import Card2k
-from helpers.embeds import error_embed
-from helpers.console import add_log
-from helpers.helper import get_data_file_yml
-from helpers.api import get_fee_telco_api_min, get_all_fee_min_telco_api, get_fee_telco_api, get_fee_api
-from helpers.embeds import list_lowest_fee_telco_embed, lowest_fee_telco_embed
 
-config = get_data_file_yml()
+from services.card2k.fee_service import FeeService
+from utils.embed import error_embed, disabled_command_embed
+from utils.config import get_config_value, get_config
+from helpers.console import logger
 
 
-class KiemTraPhi(commands.Cog):
+class CheckFeeExchangeCard(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
+        self.fee_service = FeeService()
+        self.enabled = get_config_value("commands.kiem_tra_phi.enabled", False)
+        self.only_admin = get_config_value("commands.kiem_tra_phi.only_admin", False)
 
-    @app_commands.command(name="kiem-tra-phi", description="Kiểm tra phí đổi thẻ cào")
+    @app_commands.command(
+        name="kiem_tra_phi", 
+        description=get_config_value("commands.kiem_tra_phi.description", "Kiểm tra phí đổi thẻ cào")
+    )
     @app_commands.choices(
         telco=[
             app_commands.Choice(name="Tất cả nhà mạng", value="all"),
             *[
                 app_commands.Choice(name=telco_key.capitalize(), value=telco_key)
-                for telco_key, enabled in config.get("card_types", {}).items()
+                for telco_key, enabled in get_config_value("card_types", {}).items()
                 if enabled is True
             ],
         ]
     )
-    async def kiem_tra_phi(self, interaction: discord.Interaction, telco: str = "all"):
-        # Lưu thông tin vào database với try-except để xử lý lỗi
-        session = SessionLocal()
+    async def kiem_tra_phi_command(self, interaction: discord.Interaction, telco: str):
+        """
+        Kiểm tra phí đổi thẻ cào
+        """
+
+        # Kiểm tra chức năng đã bị tắt
+        if not self.enabled:
+            embed = disabled_command_embed("Chức năng đã bị tắt")
+            await interaction.response.send_message(embed=embed, ephemeral=True)
+            return
+
+        # Kiểm tra quyền admin nếu cần
+        if self.only_admin and not interaction.user.guild_permissions.administrator:
+            embed = disabled_command_embed("Lệnh này chỉ dành cho quản trị viên")
+            await interaction.response.send_message(embed=embed, ephemeral=True)
+            return
+
         try:
-            # Lấy dữ liệu từ bảng card2k
-            data = session.query(Card2k.partner_id).first()
-
-            # Kiểm tra dữ liệu
-            if not data:
-                await interaction.response.send_message(
-                    embed=error_embed(
-                        "Chưa có dữ liệu cài đặt. Vui lòng chạy lệnh `/setup-bot` trước."
-                    ),
-                    ephemeral=True,
-                )
-                add_log(
-                    "Người dùng cố gắng kiểm tra phí đổi thẻ cào nhưng database rỗng.",
-                    "WARNING",
-                )
-                return
-
-            if not config["provider"]:
-                await interaction.response.send_message(
-                    embed=error_embed(
-                        "Không được bỏ trống nhà cung cấp (provider) trong file settings.yml."
-                    ),
-                    ephemeral=True,
-                )
-                add_log(
-                    "Người dùng cố gắng kiểm tra phí đổi thẻ cào nhưng nhà cung cấp (provider) trong file settings.yml bị rỗng.",
-                    "WARNING",
-                )
-                return
-
-            # Nếu có dữ liệu, tiếp tục xử lý
-            partner_id = data.partner_id
-            provider = config["provider"]
-
-            add_log(
-                f"Kiểm tra phí đổi thẻ cào: {partner_id} - {provider}",
-                "INFO",
-            )
+            if telco == "all":
+                # Lấy phí tất cả nhà mạng
+                cheapest_telco_rate = self.fee_service.get_cheapest_telco_rate()
+                list_min_fees_by_telco = self.fee_service.get_min_fees_by_telco()
+                if not cheapest_telco_rate or not list_min_fees_by_telco:
+                    raise Exception("Lỗi lấy phí đổi thẻ cào, vui lòng kiểm tra file logs")
+                embeds = self._get_fee_min_all_telco(cheapest_telco_rate, list_min_fees_by_telco)
+                await interaction.response.send_message(embeds=embeds)
+            else:
+                # Lấy phí theo nhà mạng
+                telco_fee_info = self.fee_service.get_telco_fee_info(telco)
+                if not telco_fee_info:
+                    raise Exception("Lỗi lấy phí đổi thẻ cào, vui lòng kiểm tra file logs")
+                embeds = self._get_fee_min_by_telco(telco_fee_info, telco)
+                await interaction.response.send_message(embeds=embeds)
         except Exception as e:
-            session.rollback()
-            await interaction.response.send_message(
-                embed=error_embed(f"Đã xảy ra lỗi khi kiểm tra phí đổi thẻ cào: {e}"),
-                ephemeral=True,
-            )
-            add_log(f"Lỗi khi kiểm tra phí đổi thẻ cào: {e}", "ERROR")
-            return
-        finally:
-            session.close()
+            logger.error(f"[COG: KIEM_TRA_PHI] Lỗi: {e}")
+            message_error = error_embed(f"Lỗi khi sử dụng lệnh, vui lòng thử lại sau.")
+            await interaction.response.send_message(embed=message_error, ephemeral=True)
 
-        # Kiểm tra dữ liệu API
-        check_fee_api = get_fee_api()
+    def _get_fee_min_all_telco(self, cheapest_telco_rate: dict, list_min_fees_by_telco: dict) -> list[discord.Embed]:
+        """
+        Lấy phí đổi thẻ cào tất cả nhà mạng
+        """
 
-        # Nếu API lỗi
-        if check_fee_api is None:
-            await interaction.response.send_message(
-                embed=error_embed("API lỗi, vui lòng liên hệ admin."),
-                ephemeral=True,
-            )
-            return
+        embed_main = self.__embed_fee_min_by_telco(cheapest_telco_rate["telco_min"], cheapest_telco_rate["fee_min"])
+        embed_sub = self.__embed_fee_min_all_telco(list_min_fees_by_telco)
+        return [embed_main, embed_sub]
 
-        # Nếu API hoạt động và có status
-        if "status" in check_fee_api and check_fee_api["status"] == 100:
-            await interaction.response.send_message(
-                embed=error_embed(check_fee_api.get("message")),
-                ephemeral=True,
-            )
-            return
+    def _get_fee_min_by_telco(self, telco_fee_info: dict, telco: str) -> dict:
+        """
+        Lấy phí đổi thẻ cào theo nhà mạng
+        """
 
-        # Xuất thông tin
-        if telco == "all":
-            data_fee_min = get_fee_telco_api_min()
-            telco_min = data_fee_min["telco_min"]
-            fee_min = data_fee_min["fee_min"]
-            list_telco_fee_min = get_all_fee_min_telco_api()
+        embed_main = self.__embed_amount_min_by_telco(telco_fee_info["amount_min"], telco_fee_info["fee_min"], telco)
+        embed_sub = self.__embed_fee_by_telco(telco_fee_info["list_fee"])
+        return [embed_main, embed_sub]
 
-            await interaction.response.send_message(
-                embeds=list_lowest_fee_telco_embed(telco_min, fee_min, list_telco_fee_min),
-                ephemeral=True,
-            )
-        else:
-            # Chỉ cho phép nhà mạng có giá trị true trong settings.yml
-            if not (telco in config["card_types"] and config["card_types"][telco] is True):
-                await interaction.response.send_message(
-                    embed=error_embed("Nhà mạng không hoạt động."),
-                    ephemeral=True,
-                )
-                return
+    def __embed_fee_min_all_telco(self, list_min_fees_by_telco: dict) -> discord.Embed:
+        """
+        Tạo embed phí nhỏ nhất đổi thẻ cào tất cả nhà mạng
+        """
 
-            data_fee = get_fee_telco_api(telco)
-            fee_min = data_fee["fee_min"]
-            amount_min = data_fee["amount_min"]
-            list_fee = data_fee["list_fee"]
-
-            await interaction.response.send_message(
-                embeds=lowest_fee_telco_embed(telco, fee_min, amount_min, list_fee),
-                ephemeral=True,
-            )
-            
-        add_log(
-            f"Xuất thông tin kiểm tra phí đổi thẻ cào hoàn tất: {partner_id} - {provider}",
-            "INFO",
+        config = get_config()
+        text_sub = ""
+        for telco, fee in list_min_fees_by_telco.items():
+            text_sub += f"> ▫️ ` {fee:.1f}% ` {telco} \n"
+        embed = discord.Embed(
+            description=f"**__Các nhà mạng còn lại:__** \n {text_sub} \n",
+            color=discord.Color.from_str("#95afc0"),
         )
+        embed.set_image(
+            url=config["banner"]["kiem_tra_phi"] or config["banner"]["default"]
+        )
+
+        return embed
+    
+    def __embed_fee_min_by_telco(self, telco_min: str, fee_min: float) -> discord.Embed:
+        """
+        Tạo embed phí nhỏ nhất
+        """
+
+        config = get_config()
+        embed = discord.Embed(
+            description=f"[{datetime.datetime.now().strftime('%d/%m/%Y %H:%M')}] \n\n **__Thông tin chính:__** \n > Nhà mạng phí **thấp nhất** **[{telco_min}]({config['url']['app']})** \n > Chiết khấu **[{fee_min:.1f}%]({config['url']['app']})** \n > vd: *{10000:,.0f} {telco_min} = {int(10000 * (1 - fee_min / 100)):,} vnđ*",
+            color=discord.Color.from_str("#ffd154"),
+        )
+        return embed
+    
+    def __embed_amount_min_by_telco(self, amount_min: int, fee_min: float, telco: str) -> discord.Embed:
+        """
+        Tạo embed phí nhỏ nhất của mệnh giá
+        """
+
+        config = get_config()
+        embed = discord.Embed(
+            description=f"[{datetime.datetime.now().strftime('%d/%m/%Y %H:%M')}] \n\n **{telco.upper()}** \n\n **__Thông tin chính:__** \n > Mệnh giá **thấp nhất** **[{amount_min:,.0f}]({config['url']['app']})** \n > Chiết khấu **[{fee_min:.1f}%]({config['url']['app']})** \n > vd: *{amount_min:,.0f} VNĐ = {int(amount_min * (1 - fee_min / 100)):,} vnđ*",
+            color=discord.Color.from_str("#ffd154"),
+        )
+        return embed
+
+    def __embed_fee_by_telco(self, list_fees_by_telco: dict) -> discord.Embed:
+        """
+        Tạo embed phí đổi thẻ cào theo nhà mạng
+        """
+
+        config = get_config()
+        text_sub = ""
+        for amount, fee in list_fees_by_telco.items():
+            text_sub += f"> ▫️ ` {int(amount):,} ` -> **{float(fee):.1f}%** \n"
+        embed = discord.Embed(
+            description=f"**__Các mệnh giá còn lại:__** \n {text_sub} \n",
+            color=discord.Color.from_str("#95afc0"),
+        )
+        embed.set_image(
+            url=config["banner"]["kiem_tra_phi"] or config["banner"]["default"]
+        )
+
+        return embed
 
 
 async def setup(bot: commands.Bot):
-    await bot.add_cog(KiemTraPhi(bot))
+    await bot.add_cog(CheckFeeExchangeCard(bot))

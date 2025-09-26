@@ -1,10 +1,54 @@
 # ======================================================================================
-# Project: CardSwap
+# Project: cardswap discord
 # Author: HHiepz | http://hhiepz.github.io/
-# Date Created: 05/09/2025
 # ======================================================================================
 prefix: "!"
 provider: "https://card2k.com"
+
+#
+# =====================================================================
+# CẤU HÌNH CHỨC NĂNG
+# 
+# enabled: true - bật chức năng
+#          false - tắt chức năng
+# description: "Mô tả chức năng"
+# only_admin: true - có vai trò thuộc adminstrator mới sử dụng được
+#                 false - tất cả người dùng đều sử dụng được
+# =====================================================================
+#
+commands:
+  kiem_tra_phi:
+    enabled: true
+    description: "Kiểm tra phí đổi thẻ cào"
+    only_admin: true
+  nap_the_cao:
+    enabled: true
+    description: "Nạp thẻ cào"
+    only_admin: false
+  kiem_tra_api:
+    enabled: true
+    description: "Kiểm tra trạng thái API"
+    only_admin: true
+  set_channel_noti:
+    enabled: true
+    description: "Cài đặt kênh thông báo"
+    only_admin: true
+
+#
+# =====================================================================
+# CẤU HÌNH THÔNG BÁO
+# 
+# Có thể dùng lệnh trong bot sẽ tự động điền các thông tin này.
+# 
+# channel_id: ID của kênh thông báo (không bắt buộc)
+# role_id: ID của vai trò thông báo (không bắt buộc)
+# 
+# =====================================================================
+#
+notifications:
+  nap_the_cao:
+    channel_id: ""   # Kênh thông báo
+    role_id: ""      # Vai trò thông báo
 
 #
 # =====================================================================
@@ -26,9 +70,9 @@ provider: "https://card2k.com"
 # =====================================================================
 #
 card_status_check:
-  type: "api" 
+  type: "api"
   callback_url: ""
-  delay_time: 30 
+  delay_time: 30
 
 #
 # =====================================================================
@@ -46,7 +90,7 @@ banner:
   kiem_tra_phi: "https://i.ibb.co/DHNx3NjC/image.png"
   doi_the_cao: ""
 
-url: 
+url:
   app: "https://card2k.com"
 
 #
