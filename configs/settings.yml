@@ -25,6 +25,10 @@ commands:
     enabled: true
     description: "Nạp thẻ cào"
     only_admin: false
+  kiem_tra_api:
+    enabled: true
+    description: "Kiểm tra trạng thái API"
+    only_admin: true
   
 
 #

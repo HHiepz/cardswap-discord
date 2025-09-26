@@ -77,7 +77,7 @@ class ExchangeCard:
             - amount: int
             - request_id: str
         """
-        
+
         url = f"{self.provider}/chargingws/v2"
         sign = hashlib.md5(
             f"{self.partner_key}{data['code']}{data['serial']}".encode()
@@ -101,4 +101,28 @@ class ExchangeCard:
             return None
         except Exception as e:
             logger.error(f"[API Card2K Exchange-Card] Lỗi hàm check_exchange_card: {e}")
+            return None
+
+    def check_status_api(self) -> bool:
+        """
+        API: Kiểm tra trạng thái API
+        """
+
+        payload = {
+            'partner_id': self.partner_id,
+            'partner_key': self.partner_key,
+        }
+        url = f"{self.provider}/chargingws/v2/check-api"
+        try:
+            response = requests.get(url, json=payload)
+            response.raise_for_status()
+            data = response.json()
+            if 'status' not in data:
+                return False
+            return data["status"] == 'active'
+        except requests.RequestException as e:
+            logger.error(f"[API Card2K Exchange-Card] Lỗi hàm get_fee: {e}")
+            return None
+        except Exception as e:
+            logger.error(f"[API Card2K Exchange-Card] Lỗi hàm get_fee: {e}")
             return None
