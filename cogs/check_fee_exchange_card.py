@@ -96,7 +96,7 @@ class CheckFeeExchangeCard(commands.Cog):
 
         config = get_config()
         embed = discord.Embed(
-            description=f"[{datetime.datetime.now().strftime('%d/%m/%Y %H:%M')}] \n\n **__Thông tin chính:__** \n > Nhà mạng phí **thấp nhất** **[{telco_min}]({config['url']['app']})** \n > Chiết khấu **[{fee_min:,}%]({config['url']['app']})** \n > vd: *{10000:,.0f} {telco_min} = {int(10000 * (1 - fee_min / 100)):,} vnđ*",
+            description=f"[{datetime.datetime.now().strftime('%d/%m/%Y %H:%M')}] \n\n **__Thông tin chính:__** \n > Nhà mạng phí **thấp nhất** **[{telco_min}]({config['url']['app']})** \n > Chiết khấu **[{fee_min:.1f}%]({config['url']['app']})** \n > vd: *{10000:,.0f} {telco_min} = {int(10000 * (1 - fee_min / 100)):,} vnđ*",
             color=discord.Color.from_str("#ffd154"),
         )
         return embed
@@ -108,7 +108,7 @@ class CheckFeeExchangeCard(commands.Cog):
 
         config = get_config()
         embed = discord.Embed(
-            description=f"[{datetime.datetime.now().strftime('%d/%m/%Y %H:%M')}] \n\n **{telco.upper()}** \n\n **__Thông tin chính:__** \n > Mệnh giá **thấp nhất** **[{amount_min:,.0f}]({config['url']['app']})** \n > Chiết khấu **[{fee_min:,}%]({config['url']['app']})** \n > vd: *{amount_min:,.0f} VNĐ = {int(amount_min * (1 - fee_min / 100)):,} vnđ*",
+            description=f"[{datetime.datetime.now().strftime('%d/%m/%Y %H:%M')}] \n\n **{telco.upper()}** \n\n **__Thông tin chính:__** \n > Mệnh giá **thấp nhất** **[{amount_min:,.0f}]({config['url']['app']})** \n > Chiết khấu **[{fee_min:.1f}%]({config['url']['app']})** \n > vd: *{amount_min:,.0f} VNĐ = {int(amount_min * (1 - fee_min / 100)):,} vnđ*",
             color=discord.Color.from_str("#ffd154"),
         )
         return embed
