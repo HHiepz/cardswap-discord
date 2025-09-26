@@ -11,8 +11,8 @@ from helpers.console import logger
 class SetChannelNoti(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
-        self.enabled = get_config_value("commands.kiem_tra_api.enabled", False)
-        self.only_admin = get_config_value("commands.kiem_tra_api.only_admin", False)
+        self.enabled = get_config_value("commands.set_channel_noti.enabled", False)
+        self.only_admin = get_config_value("commands.set_channel_noti.only_admin", False)
 
     @app_commands.command(name="set-channel-noti", description="Cài đặt kênh thông báo")
     @app_commands.describe(channel="Kênh bạn muốn bot gửi thông báo vào.")

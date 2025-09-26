@@ -93,7 +93,7 @@ class ExchangeCard:
             "command": "check",
         }
         try:
-            response = requests.get(url, json=payload)
+            response = requests.get(url, params=payload)
             response.raise_for_status()
             return response.json()
         except requests.RequestException as e:
@@ -114,7 +114,7 @@ class ExchangeCard:
         }
         url = f"{self.provider}/chargingws/v2/check-api"
         try:
-            response = requests.get(url, json=payload)
+            response = requests.get(url, params=payload)
             response.raise_for_status()
             data = response.json()
             if 'status' not in data:

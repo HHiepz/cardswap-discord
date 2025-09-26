@@ -247,6 +247,7 @@ class NapTheCao(commands.Cog):
 
         except Exception as e:
             logger.error(f"[COG: NAP_THE_CAO] Lỗi: {e}")
+            self.session.rollback()
             return
 
 class ConfirmationView(discord.ui.View):
