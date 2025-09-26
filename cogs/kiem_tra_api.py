@@ -17,7 +17,10 @@ class KiemTraAPI(commands.Cog):
         self.enabled = get_config_value("commands.kiem_tra_api.enabled", False)
         self.only_admin = get_config_value("commands.kiem_tra_api.only_admin", False)
 
-    @app_commands.command(name="kiem_tra_api", description="Kiểm tra trạng thái API")
+    @app_commands.command(
+        name="kiem_tra_api", 
+        description=get_config_value("commands.kiem_tra_api.description", "Kiểm tra trạng thái API")
+    )
     async def kiem_tra_api_command(self, interaction: discord.Interaction):
         """
         Kiểm tra trạng thái API
