@@ -47,8 +47,8 @@ commands:
 #
 notifications:
   nap_the_cao:
-    channel_id: 1412708298523807754 # Kênh thông báo
-    role_id: 1413844721020829746 # Vai trò thông báo
+    channel_id: ""   # Kênh thông báo
+    role_id: ""      # Vai trò thông báo
 
 #
 # =====================================================================
