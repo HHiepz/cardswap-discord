@@ -7,9 +7,9 @@ from database.models import HistoryExchangeCard
 from database.session import SessionLocal
 
 from api.card2k.exchange_card import ExchangeCard as ExchangeCardAPI
-from utils.config import get_config_value, get_config
+from utils.config import get_config_value
 from utils.env import get_env
-from utils.embed import error_embed, _add_footer, success_embed, disabled_command_embed
+from utils.embed import _add_footer
 from helpers.console import logger
 
 class NapTheCaoTask(commands.Cog):

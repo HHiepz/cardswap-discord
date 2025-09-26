@@ -1,7 +1,7 @@
 import requests
 import hashlib
 
-from helpers.console import LogContext, logger
+from helpers.console import logger
 from utils.env import get_partner_id, get_partner_key
 from utils.config import get_config_value
 
