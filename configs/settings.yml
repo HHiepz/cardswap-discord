@@ -21,6 +21,10 @@ commands:
     enabled: true
     description: "Kiểm tra phí đổi thẻ cào"
     only_admin: true
+  nap_the_cao:
+    enabled: true
+    description: "Nạp thẻ cào"
+    only_admin: false
   
 
 #

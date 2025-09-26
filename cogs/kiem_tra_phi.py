@@ -39,13 +39,13 @@ class CheckFeeExchangeCard(commands.Cog):
         # Kiểm tra chức năng đã bị tắt
         if not self.enabled:
             embed = disabled_command_embed("Chức năng đã bị tắt")
-            await interaction.response.send_message(embed=embed)
+            await interaction.response.send_message(embed=embed, ephemeral=True)
             return
 
         # Kiểm tra quyền admin nếu cần
         if self.only_admin and not interaction.user.guild_permissions.administrator:
             embed = disabled_command_embed("Lệnh này chỉ dành cho quản trị viên")
-            await interaction.response.send_message(embed=embed)
+            await interaction.response.send_message(embed=embed, ephemeral=True)
             return
 
         try:

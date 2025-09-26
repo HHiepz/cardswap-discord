@@ -29,7 +29,7 @@ class CardSwapBot(commands.Bot):
             await self._sync_commands()
 
     async def _load_extensions(self):
-        extensions = [("./cogs", "cogs")]
+        extensions = [("./cogs", "cogs"), ("./tasks", "tasks")]
 
         for dir_name, module_prefix in extensions:
             if not os.path.exists(dir_name):
