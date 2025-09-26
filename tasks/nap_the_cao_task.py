@@ -171,6 +171,23 @@ class NapTheCaoTask(commands.Cog):
             
             if new_embed:
                 await message.edit(embed=new_embed)
+
+                # Gửi thông báo nếu có kênh thông báo
+                notification_channel_id = get_config_value("notifications.nap_the_cao.channel_id")
+                if notification_channel_id:
+                    try:
+                        notification_channel = self.bot.get_channel(int(notification_channel_id))
+                        role_id = get_config_value("notifications.nap_the_cao.role_id")
+                        if notification_channel:
+                            # Nếu có role_id thì ping role, nếu không thì chỉ gửi embed
+                            if role_id:
+                                await notification_channel.send(content=f"<@&{role_id}> - Người gửi: <@{card_history.user_discord_id}>", embed=new_embed)
+                            else:
+                                await notification_channel.send(content=f"Người gửi: <@{card_history.user_discord_id}>", embed=new_embed)
+                        else:
+                            logger.warning(f"[TASK: NAP_THE_CAO] Không tìm thấy kênh thông báo với ID: {notification_channel_id}")
+                    except (ValueError, discord.HTTPException) as e:
+                        logger.error(f"[TASK: NAP_THE_CAO] Lỗi khi gửi thông báo đến kênh {notification_channel_id}: {str(e)}")
                 logger.info(f"[TASK: NAP_THE_CAO] Đã cập nhật Discord message cho giao dịch: {card_history.transaction_id}")
             
         except Exception as e:

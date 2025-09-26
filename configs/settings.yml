@@ -29,7 +29,26 @@ commands:
     enabled: true
     description: "Kiểm tra trạng thái API"
     only_admin: true
-  
+  set_channel_noti:
+    enabled: true
+    description: "Cài đặt kênh thông báo"
+    only_admin: true
+
+#
+# =====================================================================
+# CẤU HÌNH THÔNG BÁO
+# 
+# Có thể dùng lệnh trong bot sẽ tự động điền các thông tin này.
+# 
+# channel_id: ID của kênh thông báo (không bắt buộc)
+# role_id: ID của vai trò thông báo (không bắt buộc)
+# 
+# =====================================================================
+#
+notifications:
+  nap_the_cao:
+    channel_id: 1412708298523807754 # Kênh thông báo
+    role_id: 1413844721020829746 # Vai trò thông báo
 
 #
 # =====================================================================
@@ -51,9 +70,9 @@ commands:
 # =====================================================================
 #
 card_status_check:
-  type: "api" 
+  type: "api"
   callback_url: ""
-  delay_time: 30 
+  delay_time: 30
 
 #
 # =====================================================================
@@ -71,7 +90,7 @@ banner:
   kiem_tra_phi: "https://i.ibb.co/DHNx3NjC/image.png"
   doi_the_cao: ""
 
-url: 
+url:
   app: "https://card2k.com"
 
 #
