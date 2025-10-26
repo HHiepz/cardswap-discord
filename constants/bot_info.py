@@ -4,13 +4,13 @@ Thông tin bot
 
 # Thông tin cơ bản
 BOT_NAME = "cardswap discord"
-BOT_VERSION = "1.0.0-beta.2"
+BOT_VERSION = "1.0.1"
 BOT_AUTHOR = "HHiepz"
 BOT_AUTHOR_URL = "http://hhiepz.github.io/"
 
 # Thời gian
 DATE_CREATED = "05/09/2025"
-LAST_UPDATED = "26/09/2025"
+LAST_UPDATED = "26/10/2025"
 
 # Thông tin hỗ trợ
 SUPPORT_CHANNEL = "https://2k9xteam.shop/discord"
