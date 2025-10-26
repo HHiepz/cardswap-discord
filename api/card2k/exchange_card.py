@@ -117,9 +117,10 @@ class ExchangeCard:
             response = requests.get(url, params=payload)
             response.raise_for_status()
             data = response.json()
-            if 'status' not in data:
-                return False
-            return data["status"] == 'active'
+            if data.get('status') == 'success' and "data" in data and data["data"].get("status") == "active":
+                return True
+            logger.error(f"[API Card2K Exchange-Card] Lỗi hàm check_status_api: {data.get('message')}")
+            return False
         except requests.RequestException as e:
             logger.error(f"[API Card2K Exchange-Card] Lỗi hàm get_fee: {e}")
             return None
