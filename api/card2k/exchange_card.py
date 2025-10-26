@@ -122,8 +122,8 @@ class ExchangeCard:
             logger.error(f"[API Card2K Exchange-Card] Lỗi hàm check_status_api: {data.get('message')}")
             return False
         except requests.RequestException as e:
-            logger.error(f"[API Card2K Exchange-Card] Lỗi hàm get_fee: {e}")
+            logger.error(f"[API Card2K Exchange-Card] Lỗi hàm check_status_api: {e}")
             return None
         except Exception as e:
-            logger.error(f"[API Card2K Exchange-Card] Lỗi hàm get_fee: {e}")
+            logger.error(f"[API Card2K Exchange-Card] Lỗi hàm check_status_api: {e}")
             return None
